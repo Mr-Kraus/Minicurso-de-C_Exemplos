@@ -1,0 +1,38 @@
+#include <stdio.h>
+#include <string.h>
+
+// Função para calcular o shift a partir da senha
+int calc_shift(const char *key) {
+    int sum = 0;
+    for (int i = 0; key[i] != '\0'; i++) {
+        sum += (unsigned char)key[i];
+    }
+    return sum % 256;
+}
+
+// Função para descriptografar
+void decrypt(char *text, const char *key) {
+    int shift = calc_shift(key);
+    for (int i = 0; text[i] != '\0'; i++) {
+        text[i] = (unsigned char)((text[i] - shift + 256) % 256);
+    }
+}
+
+int main() {
+    char encrypted[1024];
+    char key[256];
+
+    printf("Digite o texto criptografado: ");
+    fgets(encrypted, sizeof(encrypted), stdin);
+    encrypted[strcspn(encrypted, "\n")] = '\0';  // remove \n
+
+    printf("Digite a senha: ");
+    fgets(key, sizeof(key), stdin);
+    key[strcspn(key, "\n")] = '\0';
+
+    decrypt(encrypted, key);
+
+    printf("Texto descriptografado: %s\n", encrypted);
+
+    return 0;
+}
